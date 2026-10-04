@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - Orbit Bootstrap Template</title>
+  <title>{{ config('app.name', 'SABU JAYA MART') }}</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 

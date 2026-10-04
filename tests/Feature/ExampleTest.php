@@ -14,6 +14,19 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertOk()
+            ->assertSee('flight-journey')
+            ->assertSee('flight-aircraft')
+            ->assertSee('Gulir untuk memulai perjalanan')
+            ->assertSee('hero-visual')
+            ->assertSee('Hal kecil yang membuat belanja terasa lebih mudah.')
+            ->assertSee('market-stack-section')
+            ->assertSee('Belanja mudah,')
+            ->assertSee('Gulir untuk melihat pilihan')
+            ->assertSee('Layanan')
+            ->assertSee('Keunggulan')
+            ->assertSee('Tentang Kami')
+            ->assertSee('site-footer')
+            ->assertSee('primary-navigation');
     }
 }

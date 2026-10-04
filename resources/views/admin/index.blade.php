@@ -1,79 +1,66 @@
 @extends('layouts.app')
 
 @section('title', 'Admin Dashboard')
+@section('admin-page-label', 'Dashboard')
 
 @section('content')
-<div class="d-flex">
+<div class="d-flex admin-dashboard">
 
-    <!-- SIDEBAR -->
-    <aside class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
-        <h4 class="fw-bold mb-4">
-            <i class="bi bi-grid-1x2-fill"></i> Admin Panel
-        </h4>
-
-        <ul class="nav nav-pills flex-column gap-2">
-            <li class="nav-item">
-                <a href="{{ route('admin.dashboard') }}" 
-                   class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : 'text-white' }}">
-                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="{{ route('admin.users') }}" 
-                   class="nav-link {{ request()->routeIs('admin.users') ? 'active' : 'text-white' }}">
-                    <i class="bi bi-people me-2"></i> Users
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="{{ route('admin.data') }}" 
-                   class="nav-link {{ request()->routeIs('admin.data') ? 'active' : 'text-white' }}">
-                    <i class="bi bi-folder me-2"></i> Data
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="{{ route('admin.settings') }}" 
-                   class="nav-link {{ request()->routeIs('admin.settings') ? 'active' : 'text-white' }}">
-                    <i class="bi bi-gear me-2"></i> Pengaturan
-                </a>
-            </li>
-        </ul>
-    </aside>
+    @include('admin.partials.sidebar')
 
     <!-- MAIN CONTENT -->
-    <main class="flex-grow-1 bg-light">
+    <main class="flex-grow-1 bg-light admin-dashboard-main">
 
-        <!-- TOPBAR -->
-        <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
-            <div class="container-fluid">
-                <span class="navbar-brand fw-bold">{{ $data['title'] ?? 'Dashboard' }}</span>
-                <a href="{{ route('home') }}" class="btn btn-outline-danger">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
-            </div>
-        </nav>
+        @include('admin.partials.topbar')
 
         <!-- CONTENT -->
         <div class="container-fluid p-4">
 
             <div class="mb-4">
-                <h2 class="fw-bold">Selamat Datang, Admin</h2>
-                <p class="text-muted">Ini adalah halaman dashboard administrator.</p>
+                <h2 class="fw-bold">Dashboard {{ config('app.name', 'SABU JAYA MART') }}</h2>
+                <p class="text-muted">Kelola produk, pengguna, dan aktivitas toko dari satu tempat.</p>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4 admin-welcome-card">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div class="admin-welcome-copy">
+                            <h3 class="fw-bold mb-1">Halo, {{ auth()->user()->name }}</h3>
+                            <p class="mb-0 text-white-50">Panel administrasi toko siap digunakan.</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('products.index') }}" class="btn btn-light text-primary fw-semibold">
+                                <i class="bi bi-box-seam me-2"></i> Produk
+                            </a>
+                            <a href="{{ route('products.create') }}" class="btn btn-outline-light fw-semibold">
+                                <i class="bi bi-plus-circle me-2"></i> Baru
+                            </a>
+                        </div>
+                    </div>
+                    <div class="admin-hero-cube" aria-hidden="true">
+                        <span class="admin-hero-cube-rotator">
+                            <span class="admin-cube-face admin-cube-front"><i class="bi bi-box-seam"></i></span>
+                            <span class="admin-cube-face admin-cube-back"></span>
+                            <span class="admin-cube-face admin-cube-right"></span>
+                            <span class="admin-cube-face admin-cube-left"></span>
+                            <span class="admin-cube-face admin-cube-top"></span>
+                            <span class="admin-cube-face admin-cube-bottom"></span>
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <!-- STATISTICS -->
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm">
+            <div class="row g-4 admin-statistics">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100 admin-stat-card">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <p class="text-muted mb-1">Total Users</p>
                                     <h2 class="fw-bold">{{ $data['totalUsers'] }}</h2>
                                 </div>
-                                <div class="text-primary" style="font-size: 45px;">
+                                <div class="stat-icon text-primary rounded-circle bg-primary-subtle p-3">
                                     <i class="bi bi-people"></i>
                                 </div>
                             </div>
@@ -81,15 +68,31 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100 admin-stat-card">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="text-muted mb-1">Produk</p>
+                                    <h2 class="fw-bold">{{ $data['totalProducts'] }}</h2>
+                                </div>
+                                <div class="stat-icon text-success rounded-circle bg-success-subtle p-3">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100 admin-stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <p class="text-muted mb-1">Total Data</p>
                                     <h2 class="fw-bold">{{ $data['totalData'] }}</h2>
                                 </div>
-                                <div class="text-success" style="font-size: 45px;">
+                                <div class="stat-icon text-info rounded-circle bg-info-subtle p-3">
                                     <i class="bi bi-database"></i>
                                 </div>
                             </div>
@@ -97,31 +100,47 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100 admin-stat-card">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <p class="text-muted mb-1">Aktivitas</p>
                                     <h2 class="fw-bold">{{ $data['aktivitas'] }}</h2>
                                 </div>
-                                <div class="text-warning" style="font-size: 45px;">
+                                <div class="stat-icon text-warning rounded-circle bg-warning-subtle p-3">
                                     <i class="bi bi-bar-chart"></i>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- WELCOME CARD -->
-            <div class="card border-0 shadow-sm mt-4">
-                <div class="card-body p-4">
-                    <h4 class="fw-bold">Dashboard Admin</h4>
-                    <p class="text-muted">Sistem berhasil terhubung dengan halaman administrator Laravel.</p>
-                    <div class="alert alert-success mb-0">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        Halaman Admin berhasil dibuka.
+            <div class="card border-0 shadow-sm mt-4 admin-sales-card admin-dashboard-sales">
+                <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <p class="text-muted mb-1">Penjualan Hari Ini</p>
+                        <h3 class="fw-bold mb-0">Rp {{ number_format($data['todaySales'], 0, ',', '.') }}</h3>
+                    </div>
+                    <i class="bi bi-graph-up-arrow fs-2 text-success"></i>
+                </div>
+            </div>
+
+            <!-- QUICK ACTIONS -->
+            <div class="mt-4">
+                <h5 class="fw-bold mb-3">Aksi Cepat</h5>
+                <div class="row g-3">
+                    <div class="col-md-6 admin-quick-action">
+                        <a href="{{ route('products.index') }}" class="btn btn-primary w-100 py-3 rounded-4 shadow-sm">
+                            <i class="bi bi-box-seam me-2"></i> Kelola Produk
+                        </a>
+                    </div>
+                    <div class="col-md-6 admin-quick-action">
+                        <a href="{{ route('products.create') }}" class="btn btn-success w-100 py-3 rounded-4 shadow-sm">
+                            <i class="bi bi-plus-circle me-2"></i> Tambah Produk Baru
+                        </a>
                     </div>
                 </div>
             </div>

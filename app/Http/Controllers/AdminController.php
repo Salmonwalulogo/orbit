@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -10,9 +13,11 @@ class AdminController extends Controller
     {
         $data = [
             'title' => 'Dashboard',
-            'totalUsers' => 120,
-            'totalData' => 250,
-            'aktivitas' => 85
+            'totalUsers' => User::count(),
+            'totalData' => Product::count(),
+            'totalProducts' => Product::count(),
+            'aktivitas' => Transaction::whereDate('created_at', today())->count(),
+            'todaySales' => Transaction::whereDate('created_at', today())->sum('grand_total'),
         ];
 
         return view('admin.index', compact('data'));
@@ -20,24 +25,16 @@ class AdminController extends Controller
 
     public function users()
     {
-        $users = [
-            ['id' => 1, 'name' => 'John Doe', 'email' => 'john@example.com', 'role' => 'Admin'],
-            ['id' => 2, 'name' => 'Jane Smith', 'email' => 'jane@example.com', 'role' => 'User'],
-            ['id' => 3, 'name' => 'Bob Wilson', 'email' => 'bob@example.com', 'role' => 'User'],
-        ];
+        $users = User::query()->latest()->get(['id', 'name', 'email', 'role']);
 
         return view('admin.user', compact('users'));
     }
 
     public function data()
     {
-        $items = [
-            ['id' => 1, 'name' => 'Data 1', 'description' => 'Description 1', 'created_at' => now()],
-            ['id' => 2, 'name' => 'Data 2', 'description' => 'Description 2', 'created_at' => now()],
-            ['id' => 3, 'name' => 'Data 3', 'description' => 'Description 3', 'created_at' => now()],
-        ];
+        $products = Product::latest()->get();
 
-        return view('admin.data', compact('items'));
+        return view('admin.data', compact('products'));
     }
 
     public function settings()

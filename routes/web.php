@@ -1,49 +1,41 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-// ==================== FRONTEND ROUTES ====================
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CashierController;
 
 Route::get('/', function () {
-    return view('frontend.index');
+    return view('welcome');
 })->name('home');
 
-// ==================== AUTH ROUTES ====================
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
-Route::post('/login', function () {
-    return redirect()->route('admin.dashboard');
-})->name('login.prosess');
-
-// ==================== ADMIN ROUTES ====================
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    
-    // Dashboard
-    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // Users Management
-    Route::get('/users', [AdminController::class, 'users'])->name('users');
-    
-    // Data Management
-    Route::get('/data', [AdminController::class, 'data'])->name('data');
-    
-    // Settings
-    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
-    
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware(['auth', 'admin'])->controller(AdminController::class)->group(function () {
+    Route::get('/admin/dashboard', 'dashboard')->name('admin.dashboard');
+    Route::get('/admin/users', 'users')->name('admin.users');
+    Route::get('/admin/data', 'data')->name('admin.data');
+    Route::get('/admin/settings', 'settings')->name('admin.settings');
+});
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('products', ProductController::class);
+});
+
+Route::middleware(['auth', 'kasir'])->group(function () {
+    Route::get('/kasir', [CashierController::class, 'index'])->name('cashier.index');
+    Route::post('/kasir/transaksi', [CashierController::class, 'store'])
+        ->name('cashier.store');
+});
+
+require __DIR__.'/auth.php';
